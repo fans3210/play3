@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dataservice-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dataservice
+  template:
+    metadata:
+      labels:
+        app: dataservice
+    spec:
+      volumes:
+        - name: dataservice-volume
+          persistentVolumeClaim:
+            claimName: celery-pvc
+      containers:
+        - name: dataservice
+          image: fans3210/flask-celery-microservice
+          volumeMounts:
+            - name: dataservice-volume
+              mountPath: /data
+          env:
+            - name: PYTHONUNBUFFERED
+              value: "1"
+          envFrom:
+            - secretRef:
+                name: mysecret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dataservice-srv
+spec:
+  selector:
+    app: dataservice
+  type: ClusterIP
+  ports:
+    - name: webapi
+      protocol: TCP
+      port: 5000
+      targetPort: 5000

@@ -1,0 +1,15 @@
+autopep8==1.5.5
+Flask==1.1.2
+flask-cors==3.0.10
+grpcio==1.36.1
+importlib-metadata==2.0.0
+loguru==0.5.3
+pandas==1.2.3
+pyarrow==3.0.0
+wheel==0.36.2
+PyMySQL==0.9.3
+Flask-SocketIO==5.0.1
+eventlet==0.30.2
+celery==5.0.5
+redis==3.5.3
+rstr==2.2.6

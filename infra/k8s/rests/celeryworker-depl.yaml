@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: celeryworker-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: celeryworker
+  template:
+    metadata:
+      labels:
+        app: celeryworker
+    spec:
+      volumes:
+        - name: celery-volume
+          persistentVolumeClaim:
+            claimName: celery-pvc
+      containers:
+        - name: celeryworker
+          image: fans3210/flask-celery-microservice
+          volumeMounts:
+            - name: celery-volume
+              mountPath: /data
+          command:
+            - "bash"
+            - "-c"
+            - "celery -A main.cworker worker -l info"
+          env:
+            - name: PYTHONUNBUFFERED
+              value: "1"
+          envFrom:
+            - secretRef:
+                name: mysecret

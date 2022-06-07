@@ -1,0 +1,35 @@
+apiVersion: skaffold/v2alpha3
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - ./infra/k8s/sc.yaml
+      - ./infra/k8s/cm.yaml
+      - ./infra/k8s/secrets.yaml
+      - ./infra/k8s/mysql-pv.yaml
+      - ./infra/k8s/mysql-sts.yaml
+      - ./infra/k8s/redis-sts.yaml
+      - ./infra/k8s/rests/*
+build:
+  local:
+    push: false
+  artifacts:
+    - image: fans3210/webapp
+      context: webapp
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        manual:
+          - src: "**/*.js"
+            dest: .
+          - src: "**/*.jsx"
+            dest: .
+
+    - image: fans3210/flask-celery-microservice
+      context: dataservice
+      docker:
+        dockerfile: Dockerfile.dev
+      sync:
+        manual:
+          - src: "**/*.python"
+            dest: .

@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-service
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.org/websocket-services: "dataservice-srv"
+    nginx.ingress.kubernetes.io/client-body-buffer-size: 500M
+    nginx.ingress.kubernetes.io/proxy-body-size: 500M
+
+spec:
+  rules:
+    - host: localhost
+      http:
+        paths:
+          - path: /api/data/?(.*)
+            backend:
+              serviceName: dataservice-srv
+              servicePort: 5000
+          - path: /datasocket/.*
+            backend:
+              serviceName: dataservice-srv
+              servicePort: 5000
+          - path: /socket.io/.*
+            backend:
+              serviceName: dataservice-srv
+              servicePort: 5000
